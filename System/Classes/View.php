@@ -62,9 +62,8 @@ class View {
     /*
      * Load either the action file, or the fallback & output it.
      */
+    $fileFound = false;
     foreach($locationArray as $filePath) {
-      $fileFound = false;
-      
       ob_start();
       
       // Work out which file to load

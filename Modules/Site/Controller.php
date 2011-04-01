@@ -3,12 +3,16 @@
 class Site_Controller extends Controller {
 
   function action_index() {
-    $queryResult = $this->app->plugins->DB->query("SELECT * FROM `test` WHERE `name`='%s'", "TEST");
-    $pageContent = mysql_fetch_array($queryResult);
-    $this->view->set("contentTitle", $pageContent['name']);
-    $this->view->set("content", $pageContent['content']);
+    /*
+     * Load the Node module & the home-page config value
+     */
+    $nodeModule = $this->app->module("Node");
+    $homePage = $this->app->config("Site", "indexNode");
     
-    $this->view->render();
+    /*
+     * run Node's action_fallback()
+     */
+    $nodeModule->action_fallback($homePage);
   }
   
   /*

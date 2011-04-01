@@ -32,25 +32,21 @@ class Application {
     }
     
     /*
-     * Load the Plugins & URL classes
+     * Load the Plugins & URL classes, then create a blank class for modules
      */
     $this->plugins = new Plugins($this);
     $this->url = new URL($this);
+    $this->modules = new stdClass;
     
     /*
      * Dispatch to the right module
      */
     // Get the Module, Controller & Action names
     $moduleName = ucwords($this->url->module);
-    $controllerName = $moduleName . "_Controller";
     $actionName = "action_" . $this->url->action;
     
-    // Prepare the View class
-    $this->view = new View($this, $moduleName, $this->url->action);
-    
-    // Load the Module & instantiate it
-    include("Modules/{$moduleName}/Controller.php");
-    $controller = new $controllerName($this, $moduleName, $this->url->action, $this->view);
+    // Get an instance of the module
+    $controller = $this->module($moduleName);
     
     if(method_exists($controller, $actionName)) {
       // Run the action requested
@@ -58,13 +54,31 @@ class Application {
       
     } else if(method_exists($controller, "action_fallback")) {
       // Run the fallback action
-      call_user_func_array(array($controller, "action_fallback"), $this->url->query);
+      call_user_func_array(array($controller, "action_fallback"), array($this->url->action, $this->url->query));
       
     } else {
       // There's no action, so throw an error
       trigger_error("PINEAPPLE ERROR: No action could be executed.", E_USER_ERROR);
       
     }
+  }
+  
+  function module($moduleName) {
+    if(!isset($this->modules->{$moduleName})) {
+      $moduleFile = "Modules/{$moduleName}/Controller.php";
+      
+      if(file_exists($moduleFile)) {
+        include($moduleFile);
+        
+        $moduleController = $moduleName . "_Controller";
+        
+        $this->modules->{$moduleName} = new $moduleController($this, $moduleName, $this->url->action);
+      } else {
+        trigger_error("PINEAPPLE ERROR: Could not load module \"{$moduleName}\"", E_USER_ERROR);
+      }
+    }
+    
+    return $this->modules->{$moduleName};
   }
   
   function config() {
