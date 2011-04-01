@@ -2,6 +2,12 @@
 
 class Site_Controller extends Controller {
 
+  function install() {
+    $this->app->writeConfig("Site", array(
+      "indexNode" => "home-page"
+    ));
+  }
+
   function action_index() {
     /*
      * Load the Node module & the home-page config value
@@ -19,7 +25,7 @@ class Site_Controller extends Controller {
    * More of a placeholder action than anything else, since its content is in the View file.
    */
   function action_404() {
-    $this->set("PageTitle", "Error 404");
+    $this->view->set("PageTitle", "Error 404");
     $this->view->render();
   }
 

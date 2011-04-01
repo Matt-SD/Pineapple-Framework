@@ -63,6 +63,7 @@ h1 {
 #content {
   padding: 10px 0;
 }
+#content p { font-size: 1.1em; }
 #content .title {
   border-bottom: 1px dotted #BBB;
   font-size: 1.75em;

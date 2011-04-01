@@ -1,0 +1,12 @@
+PINEAPPLE FRAMEWORK v0.2
+========================
+
+Installation Intructions
+------------------------
+1- Upload Pineapple to your web server
+2- Point your browser to /install
+
+Requirements
+------------
+- PHP (Not sure which is the oldest version possible. It was built on 5.3 though)
+- MySQL
